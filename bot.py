@@ -4,11 +4,8 @@ from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filte
 
 TOKEN = os.getenv("BOT_TOKEN") or "8644286932:AAE-bJGIwynojZjOyYnK6J6Qy-Zm06W8wbg"
 
-async def remove_stickers(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # پشکنینی گشتگیر بۆ هەموو جۆرەکانی ستیکەر (ئاسایی، ڤیدیۆیی و جووڵاو)
-    if update.message and (update.message.sticker or update.message.video_chat_started):
-        pass
-    
+async def delete_all_stickers(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # پشکنین بۆ ئەوەی ئایا نامەکە ستیکەرە (بە هەموو جۆرەکانیەوە: ئاسایی، جووڵاو، ڤیدیۆیی)
     if update.message and update.message.sticker:
         try:
             await update.message.delete()
@@ -18,8 +15,8 @@ async def remove_stickers(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 def main() -> None:
     app = ApplicationBuilder().token(TOKEN).build()
     
-    # فیلتەری تایبەت بۆ گرتنی سەرجەم ستیکەرەکان بە بێ کێشە
-    app.add_handler(MessageHandler(filters.Sticker.ALL, remove_stickers))
+    # بەکارهێنانی filters.ATTACHMENT یان filters.ALL بۆ ئەوەی هیچ ستیکەرێک فەرامۆش نەکات
+    app.add_handler(MessageHandler(filters.Sticker.ALL | filters.ALL, delete_all_stickers))
     
     app.run_polling()
 
