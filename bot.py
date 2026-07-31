@@ -13,9 +13,8 @@ async def delete_stickers(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     app = ApplicationBuilder().token(TOKEN).build()
-    # filters.Sticker گشتییە و هەموو جۆرە ستیکەرێکی وێنەیی، جووڵاو و ڤیدیۆیی دەگرێتەوە
     app.add_handler(MessageHandler(filters.Sticker.ALL, delete_stickers))
     app.run_polling()
 
-if name == "main":
+if __name__ == "__main__":
     main()
