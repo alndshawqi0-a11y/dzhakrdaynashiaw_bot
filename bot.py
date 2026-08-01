@@ -4,20 +4,19 @@ from telegram.ext import ApplicationBuilder, MessageHandler, ContextTypes, filte
 
 TOKEN = os.getenv("BOT_TOKEN") or "8644286932:AAE-bJGIwynojZjOyYnK6J6Qy-Zm06W8wbg"
 
-async def delete_all_stickers(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # پشکنین بۆ ئەوەی ئایا نامەکە ستیکەرە (بە هەموو جۆرەکانیەوە: ئاسایی، جووڵاو، ڤیدیۆیی)
-    if update.message and update.message.sticker:
-        try:
-            await update.message.delete()
-        except Exception:
-            pass
+async def delete_everything(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message:
+        # پشکنین بۆ ئەوەی ئایا ستیکەرە، یان فایلی جووڵاوە (GIF/Animation)، یان ڤیدیۆیە
+        if update.message.sticker or update.message.animation or update.message.video or update.message.document:
+            try:
+                await update.message.delete()
+            except Exception as e:
+                print(f"Error: {e}")
 
-def main() -> None:
+def main():
     app = ApplicationBuilder().token(TOKEN).build()
-    
-    # بەکارهێنانی filters.ATTACHMENT یان filters.ALL بۆ ئەوەی هیچ ستیکەرێک فەرامۆش نەکات
-    app.add_handler(MessageHandler(filters.Sticker.ALL | filters.ALL, delete_all_stickers))
-    
+    # filters.ALL گشتییە و هەموو جۆرە نامە و فایلك دەگرێت
+    app.add_handler(MessageHandler(filters.ALL, delete_everything))
     app.run_polling()
 
 if __name__ == "__main__":
